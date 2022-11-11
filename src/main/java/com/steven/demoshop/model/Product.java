@@ -1,12 +1,10 @@
-package com.steven.demoshop.Model;
+package com.steven.demoshop.model;
 
-import com.steven.demoshop.Enum.ProductStatus;
+import com.steven.demoshop.constant.ProductStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.relational.core.sql.In;
 
 import java.time.LocalTime;
 

@@ -1,4 +1,4 @@
-package com.steven.demoshop.Enum;
+package com.steven.demoshop.constant;
 
 public enum Gender {
     Male,

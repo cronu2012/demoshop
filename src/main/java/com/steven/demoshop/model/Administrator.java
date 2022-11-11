@@ -1,7 +1,6 @@
-package com.steven.demoshop.Model.image;
+package com.steven.demoshop.model;
 
-
-import com.steven.demoshop.Enum.ImageStatus;
+import com.steven.demoshop.constant.Permission;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,11 +12,10 @@ import java.time.LocalTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MemberImage {
-    private Integer imageId;
+public class Administrator {
     private Integer memberId;
-    private String imgurUrl;
-    private ImageStatus status;
+    private Integer storeId;
+    private Permission permission;
     private LocalTime createTime;
     private LocalTime modifyTime;
 }

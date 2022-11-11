@@ -1,5 +1,5 @@
-package com.steven.demoshop.Model.image;
-import com.steven.demoshop.Enum.ImageStatus;
+package com.steven.demoshop.model.image;
+import com.steven.demoshop.constant.ImageStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

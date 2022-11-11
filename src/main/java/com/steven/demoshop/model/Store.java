@@ -1,11 +1,9 @@
-package com.steven.demoshop.Model;
+package com.steven.demoshop.model;
 
-import com.steven.demoshop.Enum.Permission;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalTime;
 
@@ -13,10 +11,11 @@ import java.time.LocalTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Administrator {
-    private Integer memberId;
+public class Store {
     private Integer storeId;
-    private Permission permission;
+    private String storeName;
+    private String storePhone;
+    private String intro;
     private LocalTime createTime;
     private LocalTime modifyTime;
 }

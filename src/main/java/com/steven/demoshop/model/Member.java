@@ -1,16 +1,13 @@
-package com.steven.demoshop.Model;
+package com.steven.demoshop.model;
 
-import com.steven.demoshop.Enum.Gender;
+import com.steven.demoshop.constant.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.relational.core.sql.In;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Date;
 
 @Data
 @Builder
@@ -19,6 +16,7 @@ import java.util.Date;
 public class Member {
     private Integer memberId;
     private String memberEmail;
+    private String password;
     private Gender gender;
     private LocalDate birthday;
     private String address;
