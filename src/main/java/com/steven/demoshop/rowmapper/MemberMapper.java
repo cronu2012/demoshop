@@ -16,6 +16,7 @@ public class MemberMapper implements RowMapper<Member> {
                 .memberId(rs.getInt("member_id"))
                 .memberEmail(rs.getString("member_email"))
                 .password(rs.getString("password"))
+                .memberName(rs.getString("member_name"))
                 .gender(Gender.valueOf(rs.getString("gender")))
                 .birthday(rs.getDate("birthday").toLocalDate())
                 .address(rs.getString("address"))
