@@ -87,15 +87,16 @@ public class MemberDaoImpl implements MemberDao {
         try {
             if (member.getMemberId() == null) {
                 jdbcTemplate.update(INSERT, new MapSqlParameterSource(map), keyHolder);
+                Integer id = keyHolder.getKey().intValue();
+                return id;
             } else {
-                jdbcTemplate.update(UPDATE, new MapSqlParameterSource(map), keyHolder);
+                jdbcTemplate.update(UPDATE, map);
+                return member.getMemberId();
             }
         } catch (Exception exception) {
             log.error(exception.getMessage());
             return null;
         }
-        Integer id = keyHolder.getKey().intValue();
-        return id;
     }
 
 
