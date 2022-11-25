@@ -37,6 +37,10 @@ public class MemberDaoImpl implements MemberDao {
             "select member_id,member_email,password,member_name,gender,birthday,address,phone,create_time,modify_time" +
                     " from member where member_id = :id";
 
+    private static final String SELECT_ONE_EMAIL =
+            "select member_id,member_email,password,member_name,gender,birthday,address,phone,create_time,modify_time" +
+                    " from member where member_email = :email";
+
 
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
@@ -58,9 +62,25 @@ public class MemberDaoImpl implements MemberDao {
         Map<String, Object> map = new HashMap<>();
         map.put("id", id);
         List<Member> members = jdbcTemplate.query(SELECT_ONE, map, new MemberMapper());
-        log.info(members.toString());
-        return members.get(0);
+        if (members.size() != 0) {
+            log.info(members.get(0).toString());
+            return members.get(0);
+        } else {
+            return null;
+        }
+    }
 
+    @Override
+    public Member selectOneByEmail(String email) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("email", email);
+        List<Member> members = jdbcTemplate.query(SELECT_ONE_EMAIL, map, new MemberMapper());
+        if (members.size() != 0) {
+            log.info(members.get(0).toString());
+            return members.get(0);
+        } else {
+            return null;
+        }
     }
 
 

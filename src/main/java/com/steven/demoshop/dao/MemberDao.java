@@ -10,6 +10,8 @@ public interface MemberDao {
 
     Member selectOneById(Integer id);
 
+    Member selectOneByEmail(String email);
+
     Integer insertOrUpdate(Member member);
 
 

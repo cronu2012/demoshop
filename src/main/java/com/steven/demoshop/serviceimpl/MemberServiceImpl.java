@@ -28,16 +28,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Member getOneByEmail(String email) {
-        List<Member> members = memberDao.selectAll();
-
-        Member result = null;
-        for (Member m : members) {
-            if (m.getMemberEmail().equals(email)) {
-                result = m;
-                break;
-            }
-        }
-        return result;
+        return memberDao.selectOneByEmail(email);
     }
 
     //if no one match,return null

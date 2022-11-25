@@ -1,6 +1,7 @@
 package com.steven.demoshop.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.steven.demoshop.constant.Gender;
 import lombok.Data;
 import lombok.Value;
@@ -22,7 +23,7 @@ public class MemberRequest {
     String password;
     @NotBlank
     String memberName;
-    @NotBlank
+    @NotNull
     Gender gender;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     LocalDate birthday;
