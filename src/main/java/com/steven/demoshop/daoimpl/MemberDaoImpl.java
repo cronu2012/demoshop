@@ -26,7 +26,7 @@ public class MemberDaoImpl implements MemberDao {
 
     private static final String UPDATE =
             "update member" +
-                    "set member_email =:email,password = :password,member_name=:name,gender=:gender," +
+                    " set member_email =:email,password = :password,member_name=:name,gender=:gender," +
                     "birthday= :birthday,address=:address ,phone=:phone where member_id= :id; ";
 
     private static final String SELECT_ALL =

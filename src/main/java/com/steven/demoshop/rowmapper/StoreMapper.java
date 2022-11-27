@@ -14,8 +14,8 @@ public class StoreMapper implements RowMapper<Store> {
                 .storeName(rs.getString("store_name"))
                 .storePhone(rs.getString("store_phone"))
                 .intro(rs.getString("intro"))
-                .createTime(rs.getTime("create_time").toLocalTime())
-                .modifyTime(rs.getTime("modify_time").toLocalTime())
+                .createTime(rs.getTimestamp("create_time"))
+                .modifyTime(rs.getTimestamp("modify_time"))
                 .build();
         return store;
     }

@@ -5,7 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalTime;
+
+import java.util.Date;
 
 @Data
 @Builder
@@ -16,6 +17,6 @@ public class Store {
     private String storeName;
     private String storePhone;
     private String intro;
-    private LocalTime createTime;
-    private LocalTime modifyTime;
+    private Date createTime;
+    private Date modifyTime;
 }

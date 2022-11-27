@@ -18,8 +18,8 @@ public class ProductMapper implements RowMapper<Product> {
                 .info(rs.getString("info"))
                 .stock(rs.getInt("stock"))
                 .status(ProductStatus.valueOf(rs.getString("status")))
-                .createTime(rs.getTime("create_time").toLocalTime())
-                .modifyTime(rs.getTime("modify_time").toLocalTime())
+                .createTime(rs.getTimestamp("create_time"))
+                .modifyTime(rs.getTimestamp("modify_time"))
                 .build();
         return product;
     }

@@ -14,8 +14,8 @@ public class OrderDetailMapper implements RowMapper<OrderDetail> {
                 .productId(rs.getInt("product_id"))
                 .quantity(rs.getInt("quantity"))
                 .odPrice(rs.getInt("od_price"))
-                .orderTime(rs.getTime("order_time").toLocalTime())
-                .modifyTime(rs.getTime("modify_time").toLocalTime())
+                .orderTime(rs.getTimestamp("order_time"))
+                .modifyTime(rs.getTimestamp("modify_time"))
                 .build();
         return orderDetail;
     }

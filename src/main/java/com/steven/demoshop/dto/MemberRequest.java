@@ -12,11 +12,12 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Date;
 
 
 @Value
 public class MemberRequest {
-    Integer memberId;
+
     @NotBlank
     String memberEmail;
     @NotBlank
@@ -26,7 +27,7 @@ public class MemberRequest {
     @NotNull
     Gender gender;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    LocalDate birthday;
+    Date birthday;
     String address;
     String phone;
 }
