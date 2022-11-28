@@ -41,6 +41,9 @@ public class MemberDaoImpl implements MemberDao {
             "select member_id,member_email,password,member_name,gender,birthday,address,phone,create_time,modify_time" +
                     " from member where member_email = :email";
 
+    private static final String DELETE_ONE =
+            "delete from member where member_id = :id";
+
 
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
@@ -111,6 +114,17 @@ public class MemberDaoImpl implements MemberDao {
         } catch (Exception exception) {
             log.error(exception.getMessage());
             return null;
+        }
+    }
+
+    @Override
+    public void delete(Integer id) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", id);
+        try{
+            jdbcTemplate.update(DELETE_ONE, map);
+        } catch (RuntimeException exception){
+            log.error(exception.getMessage());
         }
     }
 

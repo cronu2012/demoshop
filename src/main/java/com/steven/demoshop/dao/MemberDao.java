@@ -14,5 +14,5 @@ public interface MemberDao {
 
     Integer insertOrUpdate(Member member);
 
-
+    void delete(Integer id);
 }

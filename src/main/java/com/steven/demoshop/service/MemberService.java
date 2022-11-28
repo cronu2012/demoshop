@@ -13,7 +13,7 @@ public interface MemberService {
 
     Member isMember(String email, String password);
 
-    Integer insert(Member member);
+    Integer insertOrUpdate(Member member);
 
-    Integer update(Member member);
+    void delete(Integer id);
 }

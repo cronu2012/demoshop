@@ -47,19 +47,14 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Integer insert(Member member) {
-        if (member.getMemberId() == null) {
-            return memberDao.insertOrUpdate(member);
-        }
-        return 0;
+    public Integer insertOrUpdate(Member member) {
+        return memberDao.insertOrUpdate(member);
     }
 
+
     @Override
-    public Integer update(Member member) {
-        if (member.getMemberId() != null) {
-            return memberDao.insertOrUpdate(member);
-        }
-        return 0;
+    public void delete(Integer id) {
+        memberDao.delete(id);
     }
 
 

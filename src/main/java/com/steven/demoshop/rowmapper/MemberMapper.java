@@ -14,7 +14,7 @@ public class MemberMapper implements RowMapper<Member> {
                 .password(rs.getString("password"))
                 .memberName(rs.getString("member_name"))
                 .gender(Gender.valueOf(rs.getString("gender")))
-                .birthday(rs.getDate("birthday"))
+                .birthday(rs.getDate("birthday").toLocalDate())
                 .address(rs.getString("address"))
                 .phone(rs.getString("phone"))
                 .createTime((rs.getTimestamp("create_time")))

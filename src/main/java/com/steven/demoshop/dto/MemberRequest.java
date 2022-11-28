@@ -1,23 +1,20 @@
 package com.steven.demoshop.dto;
 
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+
 import com.steven.demoshop.constant.Gender;
-import lombok.Data;
 import lombok.Value;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.Date;
+
 
 
 @Value
 public class MemberRequest {
-
     @NotBlank
     String memberEmail;
     @NotBlank
@@ -26,8 +23,10 @@ public class MemberRequest {
     String memberName;
     @NotNull
     Gender gender;
+    @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    Date birthday;
+    LocalDate birthday;
     String address;
+    @NotBlank
     String phone;
 }

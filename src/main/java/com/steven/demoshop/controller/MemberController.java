@@ -41,7 +41,7 @@ public class MemberController {
             String password = memberRequest.getPassword();
             String name = memberRequest.getMemberName();
             Gender gender = memberRequest.getGender();
-            Date birthday = memberRequest.getBirthday();
+            LocalDate birthday = memberRequest.getBirthday();
             String address = memberRequest.getAddress();
             String phone = memberRequest.getPhone();
 
@@ -71,7 +71,7 @@ public class MemberController {
                         .phone(phone)
                         .build();
 
-                Integer resultId = memberService.update(member);
+                Integer resultId = memberService.insertOrUpdate(member);
                 Member result = memberService.getOneById(resultId);
                 if(result==null){
                     log.error("update failed");
@@ -128,12 +128,11 @@ public class MemberController {
     @PostMapping("/member")
     public ResponseEntity<Member> insert(@RequestBody @Valid MemberRequest memberRequest) {
         boolean isCurrent =  checkMemberParam(memberRequest);
-
         String email = memberRequest.getMemberEmail();
         String password = memberRequest.getPassword();
         String name = memberRequest.getMemberName();
         Gender gender = memberRequest.getGender();
-        Date birthday = memberRequest.getBirthday();
+        LocalDate birthday = memberRequest.getBirthday();
         String address = memberRequest.getAddress();
         String phone = memberRequest.getPhone();
 
@@ -156,7 +155,7 @@ public class MemberController {
                     .address(address)
                     .phone(phone)
                     .build();
-            Integer id = memberService.insert(member);
+            Integer id = memberService.insertOrUpdate(member);
             Member result = memberService.getOneById(id);
 
             if(result==null){
@@ -171,6 +170,13 @@ public class MemberController {
 
     }
 
+    @DeleteMapping("/member/{id}")
+    public ResponseEntity<?> deleteMember(@PathVariable @Min(1) Integer id){
+        memberService.delete(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+
 
     public boolean checkMemberParam(MemberRequest memberRequest) {
         boolean isCurrent = true;
@@ -178,7 +184,7 @@ public class MemberController {
         String password = memberRequest.getPassword();
         String name = memberRequest.getMemberName();
         Gender gender = memberRequest.getGender();
-        Date birthday = memberRequest.getBirthday();
+        LocalDate birthday = memberRequest.getBirthday();
         String address = memberRequest.getAddress();
         String phone = memberRequest.getPhone();
 
@@ -213,6 +219,8 @@ public class MemberController {
             if (!(birthday.toString().matches(Regex.BIRTHDAY.getRegexString()))) {
                 isCurrent = false;
                 log.error("birthday error");
+                log.error(memberRequest.getBirthday().toString());
+                log.error(birthday.toString());
             }
         }
         return isCurrent;
