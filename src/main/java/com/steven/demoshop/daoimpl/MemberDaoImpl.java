@@ -50,14 +50,9 @@ public class MemberDaoImpl implements MemberDao {
 
     @Override
     public List<Member> selectAll() {
-        try {
-            List<Member> members = jdbcTemplate.query(SELECT_ALL, new HashMap<>(), new MemberMapper());
-            log.info(members.toString());
-            return members;
-        } catch (RuntimeException exception) {
-            log.error(exception.getMessage());
-            return null;
-        }
+        List<Member> members = jdbcTemplate.query(SELECT_ALL, new HashMap<>(), new MemberMapper());
+        log.info(members.toString());
+        return members;
     }
 
     @Override
@@ -97,35 +92,26 @@ public class MemberDaoImpl implements MemberDao {
         map.put("birthday", member.getBirthday());
         map.put("address", member.getAddress());
         map.put("phone", member.getPhone());
-        if (member.getMemberId() != null) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        if (member.getMemberId() == null) {
+            jdbcTemplate.update(INSERT, new MapSqlParameterSource(map), keyHolder);
+            Integer id = keyHolder.getKey().intValue();
+            return id;
+        } else {
             map.put("id", member.getMemberId());
+            jdbcTemplate.update(UPDATE, map);
+            return member.getMemberId();
         }
 
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        try {
-            if (member.getMemberId() == null) {
-                jdbcTemplate.update(INSERT, new MapSqlParameterSource(map), keyHolder);
-                Integer id = keyHolder.getKey().intValue();
-                return id;
-            } else {
-                jdbcTemplate.update(UPDATE, map);
-                return member.getMemberId();
-            }
-        } catch (Exception exception) {
-            log.error(exception.getMessage());
-            return null;
-        }
     }
 
     @Override
     public void delete(Integer id) {
         Map<String, Object> map = new HashMap<>();
         map.put("id", id);
-        try{
-            jdbcTemplate.update(DELETE_ONE, map);
-        } catch (RuntimeException exception){
-            log.error(exception.getMessage());
-        }
+        jdbcTemplate.update(DELETE_ONE, map);
+
     }
 
 
