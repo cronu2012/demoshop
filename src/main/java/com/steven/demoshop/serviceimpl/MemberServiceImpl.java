@@ -22,12 +22,12 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Member getOneById(Integer id) {
+    public Member getMember(Integer id) {
         return memberDao.selectOne(id);
     }
 
     @Override
-    public Member getOneByEmail(String email) {
+    public Member getMember(String email) {
         return memberDao.selectOne(email);
     }
 

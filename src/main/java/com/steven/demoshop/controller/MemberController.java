@@ -32,7 +32,7 @@ public class MemberController {
             @PathVariable @Min(1) Integer id,
             @RequestBody @Valid MemberRequest memberRequest
     ) {
-        Member oldMember = memberService.getOneById(id);
+        Member oldMember = memberService.getMember(id);
         if (oldMember == null) {
             log.error("member not found");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -72,7 +72,7 @@ public class MemberController {
                         .build();
 
                 Integer resultId = memberService.insertOrUpdate(member);
-                Member result = memberService.getOneById(resultId);
+                Member result = memberService.getMember(resultId);
                 if(result==null){
                     log.error("update failed");
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -98,7 +98,7 @@ public class MemberController {
 
     @GetMapping("/member/{id}")
     public ResponseEntity<Member> getMemberById(@PathVariable @Min(1) Integer id) {
-        Member member = memberService.getOneById(id);
+        Member member = memberService.getMember(id);
 
         if (member != null) {
             member.setPassword("*****");
@@ -115,7 +115,7 @@ public class MemberController {
             log.error("email error");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-        Member member = memberService.getOneByEmail(email);
+        Member member = memberService.getMember(email);
 
         if (member != null) {
             member.setPassword("*****");
@@ -136,7 +136,7 @@ public class MemberController {
         String address = memberRequest.getAddress();
         String phone = memberRequest.getPhone();
 
-        Member memberByEmail = memberService.getOneByEmail(email);
+        Member memberByEmail = memberService.getMember(email);
         if (memberByEmail != null) {
             log.error("email already created");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -156,7 +156,7 @@ public class MemberController {
                     .phone(phone)
                     .build();
             Integer id = memberService.insertOrUpdate(member);
-            Member result = memberService.getOneById(id);
+            Member result = memberService.getMember(id);
 
             if(result==null){
                 log.error("creation failed");

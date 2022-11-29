@@ -111,7 +111,6 @@ public class MemberDaoImpl implements MemberDao {
         Map<String, Object> map = new HashMap<>();
         map.put("id", id);
         jdbcTemplate.update(DELETE_ONE, map);
-
     }
 
 

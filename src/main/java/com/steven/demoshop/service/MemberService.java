@@ -7,9 +7,9 @@ import java.util.List;
 public interface MemberService {
     List<Member> getAll();
 
-    Member getOneById(Integer id);
+    Member getMember(Integer id);
 
-    Member getOneByEmail(String email);
+    Member getMember(String email);
 
     Member isMember(String email, String password);
 
