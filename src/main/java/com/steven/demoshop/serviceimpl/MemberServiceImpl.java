@@ -23,12 +23,12 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Member getOneById(Integer id) {
-        return memberDao.selectOneById(id);
+        return memberDao.selectOne(id);
     }
 
     @Override
     public Member getOneByEmail(String email) {
-        return memberDao.selectOneByEmail(email);
+        return memberDao.selectOne(email);
     }
 
     //if no one match,return null

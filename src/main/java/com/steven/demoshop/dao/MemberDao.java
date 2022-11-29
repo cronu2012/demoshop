@@ -8,9 +8,9 @@ import java.util.List;
 public interface MemberDao {
     List<Member> selectAll();
 
-    Member selectOneById(Integer id);
+    Member selectOne(Integer id);
 
-    Member selectOneByEmail(String email);
+    Member selectOne(String email);
 
     Integer insertOrUpdate(Member member);
 

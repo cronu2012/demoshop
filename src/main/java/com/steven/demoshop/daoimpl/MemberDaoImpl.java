@@ -56,7 +56,7 @@ public class MemberDaoImpl implements MemberDao {
     }
 
     @Override
-    public Member selectOneById(Integer id) {
+    public Member selectOne(Integer id) {
         Map<String, Object> map = new HashMap<>();
         map.put("id", id);
         List<Member> members = jdbcTemplate.query(SELECT_ONE, map, new MemberMapper());
@@ -69,7 +69,7 @@ public class MemberDaoImpl implements MemberDao {
     }
 
     @Override
-    public Member selectOneByEmail(String email) {
+    public Member selectOne(String email) {
         Map<String, Object> map = new HashMap<>();
         map.put("email", email);
         List<Member> members = jdbcTemplate.query(SELECT_ONE_EMAIL, map, new MemberMapper());
