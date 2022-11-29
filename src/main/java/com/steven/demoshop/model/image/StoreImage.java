@@ -5,7 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Date;
 
 @Data
 @Builder
@@ -16,6 +19,6 @@ public class StoreImage {
     private Integer storeId;
     private String imgurUrl;
     private ImageStatus status;
-    private LocalTime createTime;
-    private LocalTime modifyTime;
+    private Date createTime;
+    private Date modifyTime;
 }

@@ -16,8 +16,8 @@ public class ProductImgMapper implements RowMapper<ProductImage> {
                 .productId(rs.getInt("product_id"))
                 .imgurUrl(rs.getString("imgur_url"))
                 .status(ImageStatus.valueOf(rs.getString("status")))
-                .createTime(rs.getTime("create_time").toLocalTime())
-                .modifyTime(rs.getTime("modify_time").toLocalTime())
+                .createTime(rs.getTimestamp("create_time"))
+                .modifyTime(rs.getTimestamp("modify_time"))
                 .build();
         return images;
     }

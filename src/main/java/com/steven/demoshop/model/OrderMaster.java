@@ -6,7 +6,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Date;
 
 @Data
 @Builder
@@ -18,6 +21,6 @@ public class OrderMaster {
     private Integer storeId;
     private OrderStatus status;
     private Integer totalPrice;
-    private LocalTime orderTime;
-    private LocalTime modifyTime;
+    private Date orderTime;
+    private Date modifyTime;
 }

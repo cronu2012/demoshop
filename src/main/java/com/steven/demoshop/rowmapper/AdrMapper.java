@@ -14,8 +14,8 @@ public class AdrMapper implements RowMapper<Administrator> {
                 .memberId(rs.getInt("member_id"))
                 .storeId(rs.getInt("store_id"))
                 .permission(Permission.valueOf(rs.getString("permission")))
-                .createTime(rs.getTime("create_time").toLocalTime())
-                .modifyTime(rs.getTime("modify_time").toLocalTime())
+                .createTime(rs.getTimestamp("create_time"))
+                .modifyTime(rs.getTimestamp("modify_time"))
                 .build();
         return administrator;
     }
