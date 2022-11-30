@@ -51,8 +51,13 @@ public class MemberDaoImpl implements MemberDao {
     @Override
     public List<Member> selectAll() {
         List<Member> members = jdbcTemplate.query(SELECT_ALL, new HashMap<>(), new MemberMapper());
-        log.info(members.toString());
-        return members;
+        if (members.size() == 0) {
+            return null;
+        } else {
+            log.info(members.toString());
+            return members;
+        }
+
     }
 
     @Override
