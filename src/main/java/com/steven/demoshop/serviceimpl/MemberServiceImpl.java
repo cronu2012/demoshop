@@ -34,16 +34,17 @@ public class MemberServiceImpl implements MemberService {
     //if no one match,return null
     @Override
     public Member isMember(String email, String password) {
-        List<Member> members = memberDao.selectAll();
-
-        Member result = null;
-        for (Member m : members) {
-            if (email.equals(m.getMemberEmail()) && password.equals(m.getPassword())) {
-                result = m;
-                break;
+        Member member = memberDao.selectOne(email);
+        if (member == null) {
+            return null;
+        } else {
+            if (member.getPassword().equals(password)) {
+                member.setPassword("*****");
+                return member;
+            } else {
+                return null;
             }
         }
-        return result;
     }
 
     @Override
