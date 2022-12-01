@@ -26,7 +26,7 @@ public class StoreController {
 
 
     @GetMapping("/stores/{id}")
-    public ResponseEntity<Store> getStore(@PathVariable @Min(1) Integer id) {
+    public ResponseEntity<?> getStore(@PathVariable @Min(1) Integer id) {
         Store store = storeService.getStore(id);
 
         if (store == null) {

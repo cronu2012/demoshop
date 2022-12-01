@@ -49,9 +49,8 @@ public class StoreDapImpl implements StoreDao {
         map.put("intro", store.getIntro());
         KeyHolder keyHolder = new GeneratedKeyHolder();
         if (store.getStoreId() == null) {
-            Integer i = jdbcTemplate.update(INSERT, new MapSqlParameterSource(map), keyHolder);
+            jdbcTemplate.update(INSERT, new MapSqlParameterSource(map), keyHolder);
             Integer id = keyHolder.getKey().intValue();
-            log.info(i + ":" + id);
             return id;
         } else {
             map.put("id", store.getStoreId());
