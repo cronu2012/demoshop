@@ -7,7 +7,7 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class AdrMapper implements RowMapper<Administrator> {
+public class AdminMapper implements RowMapper<Administrator> {
     @Override
     public Administrator mapRow(ResultSet rs, int row) throws SQLException {
         Administrator administrator = Administrator.builder()

@@ -1,12 +1,17 @@
 package com.steven.demoshop.serviceimpl;
 
+import com.steven.demoshop.constant.Gender;
 import com.steven.demoshop.dao.MemberDao;
+import com.steven.demoshop.dto.MemberRequest;
 import com.steven.demoshop.model.Member;
 import com.steven.demoshop.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Component
@@ -48,7 +53,62 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Integer insertOrUpdate(Member member) {
+    public Integer register(MemberRequest memberRequest) {
+        String email = memberRequest.getMemberEmail();
+        String password = memberRequest.getPassword();
+        String name = memberRequest.getMemberName();
+        Gender gender = memberRequest.getGender();
+        LocalDate birthday = memberRequest.getBirthday();
+        String address = memberRequest.getAddress();
+        String phone = memberRequest.getPhone();
+        Member member = Member.builder()
+                .memberEmail(email)
+                .password(password)
+                .memberName(name)
+                .birthday(birthday)
+                .gender(gender)
+                .address(address)
+                .phone(phone)
+                .build();
+        Member test = memberDao.selectOne(member.getMemberEmail());
+        if (test == null) {
+            return memberDao.insertOrUpdate(member);
+        } else {
+            log.error("Email: {} already used", member.getMemberEmail());
+            return null;
+        }
+    }
+
+    @Override
+    public Integer modifyData(MemberRequest memberRequest) {
+        Integer id = memberRequest.getMemberId();
+        String email = memberRequest.getMemberEmail();
+        String password = memberRequest.getPassword();
+        String name = memberRequest.getMemberName();
+        Gender gender = memberRequest.getGender();
+        LocalDate birthday = memberRequest.getBirthday();
+        String address = memberRequest.getAddress();
+        String phone = memberRequest.getPhone();
+
+        List<Member> members = memberDao.selectAll();
+        for (Member m : members) {
+           if(m.getMemberId()==id) continue;
+           if(m.getMemberEmail().equals(email)){
+               log.warn("Email: {} already used",email);
+               log.warn("Member: {}" ,m);
+               return null;
+           }
+        }
+        Member member = Member.builder()
+                .memberId(id)
+                .memberEmail(email)
+                .password(password)
+                .memberName(name)
+                .birthday(birthday)
+                .gender(gender)
+                .address(address)
+                .phone(phone)
+                .build();
         return memberDao.insertOrUpdate(member);
     }
 

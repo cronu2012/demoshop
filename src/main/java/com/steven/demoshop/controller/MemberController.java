@@ -28,7 +28,7 @@ public class MemberController {
     private MemberService memberService;
 
     @PutMapping("/members/{id}")
-    public ResponseEntity<Member> updateMember(
+    public ResponseEntity<Member> modifyData(
             @PathVariable @Min(1) Integer id,
             @RequestBody @Valid MemberRequest memberRequest
     ) {
@@ -37,42 +37,13 @@ public class MemberController {
             log.error("member not found");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } else {
-            String email = memberRequest.getMemberEmail();
-            String password = memberRequest.getPassword();
-            String name = memberRequest.getMemberName();
-            Gender gender = memberRequest.getGender();
-            LocalDate birthday = memberRequest.getBirthday();
-            String address = memberRequest.getAddress();
-            String phone = memberRequest.getPhone();
-
-            boolean isCurrent = checkMemberParam(memberRequest);
-
-            if (!oldMember.getMemberEmail().equals(email)) {
-                List<Member> list = memberService.getAll();
-                for (Member m : list) {
-                    if (m.getMemberEmail().equals(email))
-                        log.error("email already created");
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-                }
-            }
-
-            if (!isCurrent) {
+            if (!checkMemberParam(memberRequest)) {
                 log.error("parameter error");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             } else {
-                Member member = Member.builder()
-                        .memberId(id)
-                        .memberEmail(email)
-                        .password(password)
-                        .memberName(name)
-                        .birthday(birthday)
-                        .gender(gender)
-                        .address(address)
-                        .phone(phone)
-                        .build();
-
-                Integer resultId = memberService.insertOrUpdate(member);
-                Member result = memberService.getMember(resultId);
+                memberRequest.setMemberId(id);
+                Integer memberId = memberService.modifyData(memberRequest);
+                Member result = memberService.getMember(memberId);
                 if (result == null) {
                     log.error("update failed");
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -85,17 +56,36 @@ public class MemberController {
         }
     }
 
-    @GetMapping("/members/{id}")
-    public ResponseEntity<Member> getMember(@PathVariable @Min(1) Integer id) {
-        Member member = memberService.getMember(id);
 
-        if (member != null) {
-            member.setPassword("*****");
-            return ResponseEntity.status(HttpStatus.OK).body(member);
+    @PostMapping("/members")
+    public ResponseEntity<Member> register(@RequestBody @Valid MemberRequest memberRequest) {
+        if (!checkMemberParam(memberRequest)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         } else {
-            log.error("member null");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            Integer id = memberService.register(memberRequest);
+
+            if (id == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
+
+            Member result = memberService.getMember(id);
+
+            if (result == null) {
+                log.error("creation failed");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            } else {
+                result.setPassword("*****");
+                log.info("creation success");
+                return ResponseEntity.status(HttpStatus.CREATED).body(result);
+            }
         }
+
+    }
+
+    @DeleteMapping("/members/{id}")
+    public ResponseEntity<?> deleteMember(@PathVariable @Min(1) Integer id) {
+        memberService.delete(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @GetMapping("/members")
@@ -125,55 +115,18 @@ public class MemberController {
         }
     }
 
-    @PostMapping("/members")
-    public ResponseEntity<Member> insert(@RequestBody @Valid MemberRequest memberRequest) {
-        boolean isCurrent = checkMemberParam(memberRequest);
-        String email = memberRequest.getMemberEmail();
-        String password = memberRequest.getPassword();
-        String name = memberRequest.getMemberName();
-        Gender gender = memberRequest.getGender();
-        LocalDate birthday = memberRequest.getBirthday();
-        String address = memberRequest.getAddress();
-        String phone = memberRequest.getPhone();
 
-        Member memberByEmail = memberService.getMember(email);
-        if (memberByEmail != null) {
-            log.error("email already created");
+    @GetMapping("/members/{id}")
+    public ResponseEntity<Member> getMember(@PathVariable @Min(1) Integer id) {
+        Member member = memberService.getMember(id);
+
+        if (member != null) {
+            member.setPassword("*****");
+            return ResponseEntity.status(HttpStatus.OK).body(member);
+        } else {
+            log.error("member null");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-
-
-        if (!isCurrent) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        } else {
-            Member member = Member.builder()
-                    .memberEmail(email)
-                    .password(password)
-                    .memberName(name)
-                    .birthday(birthday)
-                    .gender(gender)
-                    .address(address)
-                    .phone(phone)
-                    .build();
-            Integer id = memberService.insertOrUpdate(member);
-            Member result = memberService.getMember(id);
-
-            if (result == null) {
-                log.error("creation failed");
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            } else {
-                result.setPassword("*****");
-                log.info("creation success");
-                return ResponseEntity.status(HttpStatus.CREATED).body(result);
-            }
-        }
-
-    }
-
-    @DeleteMapping("/members/{id}")
-    public ResponseEntity<?> deleteMember(@PathVariable @Min(1) Integer id) {
-        memberService.delete(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 

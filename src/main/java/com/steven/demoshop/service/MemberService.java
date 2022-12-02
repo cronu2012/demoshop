@@ -1,5 +1,6 @@
 package com.steven.demoshop.service;
 
+import com.steven.demoshop.dto.MemberRequest;
 import com.steven.demoshop.model.Member;
 
 import java.util.List;
@@ -13,7 +14,9 @@ public interface MemberService {
 
     Member isMember(String email, String password);
 
-    Integer insertOrUpdate(Member member);
+    Integer register(MemberRequest memberRequest);
+
+    Integer modifyData(MemberRequest memberRequest);
 
     void delete(Integer id);
 }

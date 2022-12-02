@@ -3,6 +3,7 @@ package com.steven.demoshop.dto;
 
 
 import com.steven.demoshop.constant.Gender;
+import lombok.Data;
 import lombok.Value;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -13,8 +14,9 @@ import java.time.LocalDate;
 
 
 
-@Value
+@Data
 public class MemberRequest {
+    Integer memberId;
     @NotBlank
     String memberEmail;
     @NotBlank

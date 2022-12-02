@@ -71,7 +71,7 @@ public class StoreController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             } else {
                 log.info(result.toString());
-                log.info("update success");
+                log.info("create success");
                 return ResponseEntity.status(HttpStatus.CREATED).body(result);
             }
         }

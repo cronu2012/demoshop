@@ -1,10 +1,11 @@
 package com.steven.demoshop.dto;
 
+import lombok.Data;
 import lombok.Value;
 
 import javax.validation.constraints.NotNull;
 
-@Value
+@Data
 public class StoreRequest {
     @NotNull
     private String storeName;
