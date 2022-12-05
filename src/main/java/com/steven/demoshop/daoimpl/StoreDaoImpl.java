@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
@@ -18,7 +17,7 @@ import java.util.Map;
 
 @Slf4j
 @Component
-public class StoreDapImpl implements StoreDao {
+public class StoreDaoImpl implements StoreDao {
 
     private static final String INSERT =
             "insert into store (store_name,store_phone,intro) value (:name,:phone,:intro)";
@@ -68,13 +67,7 @@ public class StoreDapImpl implements StoreDao {
 
     @Override
     public List<Store> selectAll() {
-        List<Store> stores = jdbcTemplate.query(SELECT_ALL, new StoreMapper());
-        if (stores.size() == 0) {
-            return null;
-        } else {
-            log.info(stores.get(0).toString());
-            return stores;
-        }
+        return jdbcTemplate.query(SELECT_ALL, new StoreMapper());
     }
 
     @Override

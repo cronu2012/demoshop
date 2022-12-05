@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -28,9 +29,9 @@ public class StoreController {
     @GetMapping("/stores/{id}")
     public ResponseEntity<?> getStore(@PathVariable @Min(1) Integer id) {
         Store store = storeService.getStore(id);
-
         if (store == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            log.error("StoreId:{} is not found", id);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         } else {
             return ResponseEntity.status(HttpStatus.OK).body(store);
         }
@@ -40,15 +41,17 @@ public class StoreController {
     public ResponseEntity<?> getStores(@RequestParam(required = false) String name) {
         if (name == null) {
             List<Store> stores = storeService.getStores();
-            if (stores == null) {
-                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            if (stores.size() == 0) {
+                log.error("No stores");
+                throw new ResponseStatusException(HttpStatus.NO_CONTENT);
             } else {
                 return ResponseEntity.status(HttpStatus.OK).body(stores);
             }
         }
         Store store = storeService.getStore(name);
         if (store == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            log.error("Store Name:{} is not found", name);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         } else {
             return ResponseEntity.status(HttpStatus.OK).body(store);
         }
@@ -68,7 +71,7 @@ public class StoreController {
             Store result = storeService.getStore(id);
             if (result == null) {
                 log.error("create failed");
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
             } else {
                 log.info(result.toString());
                 log.info("create success");
@@ -95,7 +98,7 @@ public class StoreController {
             Store result = storeService.getStore(storeId);
             if (result == null) {
                 log.error("update failed");
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
             } else {
                 log.info(result.toString());
                 log.info("update success");
@@ -113,7 +116,7 @@ public class StoreController {
         if (store == null) {
             log.info("delete success");
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        }else {
+        } else {
             log.error("delete failed");
             return ResponseEntity.status(HttpStatus.OK).body(store);
         }

@@ -5,7 +5,10 @@ import com.steven.demoshop.model.Store;
 import com.steven.demoshop.service.StoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -22,7 +25,7 @@ public class StoreServiceImpl implements StoreService {
         for (Store s : stores) {
             if (store.getStorePhone().equals(s.getStorePhone())) {
                 log.error("This phone number already used");
-                return null;
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
             }
         }
         return storeDao.insertOrUpdate(store);

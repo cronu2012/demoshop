@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -27,36 +28,6 @@ public class MemberController {
     @Autowired
     private MemberService memberService;
 
-    @PutMapping("/members/{id}")
-    public ResponseEntity<Member> modifyData(
-            @PathVariable @Min(1) Integer id,
-            @RequestBody @Valid MemberRequest memberRequest
-    ) {
-        Member oldMember = memberService.getMember(id);
-        if (oldMember == null) {
-            log.error("member not found");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } else {
-            if (!checkMemberParam(memberRequest)) {
-                log.error("parameter error");
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-            } else {
-                memberRequest.setMemberId(id);
-                Integer memberId = memberService.modifyData(memberRequest);
-                Member result = memberService.getMember(memberId);
-                if (result == null) {
-                    log.error("update failed");
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-                } else {
-                    result.setPassword("*****");
-                    log.info("update success");
-                    return ResponseEntity.status(HttpStatus.OK).body(result);
-                }
-            }
-        }
-    }
-
-
     @PostMapping("/members")
     public ResponseEntity<Member> register(@RequestBody @Valid MemberRequest memberRequest) {
         if (!checkMemberParam(memberRequest)) {
@@ -72,7 +43,7 @@ public class MemberController {
 
             if (result == null) {
                 log.error("creation failed");
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
             } else {
                 result.setPassword("*****");
                 log.info("creation success");
@@ -82,28 +53,61 @@ public class MemberController {
 
     }
 
-    @DeleteMapping("/members/{id}")
-    public ResponseEntity<?> deleteMember(@PathVariable @Min(1) Integer id) {
-        memberService.delete(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    @PutMapping("/members/{id}")
+    public ResponseEntity<Member> modifyData(
+            @PathVariable @Min(1) Integer id,
+            @RequestBody @Valid MemberRequest memberRequest
+    ) {
+        Member oldMember = memberService.getMember(id);
+        if (oldMember == null) {
+            log.error("member not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        } else {
+            if (!checkMemberParam(memberRequest)) {
+                log.error("parameter error");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            } else {
+                memberRequest.setMemberId(id);
+                Integer memberId = memberService.modifyData(memberRequest);
+                Member result = memberService.getMember(memberId);
+                if (result == null) {
+                    log.error("update failed");
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+                } else {
+                    result.setPassword("*****");
+                    log.info("update success");
+                    return ResponseEntity.status(HttpStatus.OK).body(result);
+                }
+            }
+        }
+    }
+
+    @GetMapping("/members/{id}")
+    public ResponseEntity<Member> getMember(@PathVariable @Min(1) Integer id) {
+        Member member = memberService.getMember(id);
+        if (member != null) {
+            member.setPassword("*****");
+            return ResponseEntity.status(HttpStatus.OK).body(member);
+        } else {
+            log.error("member null");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping("/members")
     public ResponseEntity<?> getMembers(@RequestParam(required = false) String email) {
         if (email == null) {
             List<Member> members = memberService.getAll();
-            if (members == null) {
-                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-            } else {
+            if (members.size() != 0) {
                 for (Member m : members) {
                     m.setPassword("*****");
                 }
-                return ResponseEntity.status(HttpStatus.OK).body(members);
             }
+            return ResponseEntity.status(HttpStatus.OK).body(members);
         }
         if (!(email.matches(Regex.EMAIL.getRegexString()))) {
             log.error("email error");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         Member member = memberService.getMember(email);
 
@@ -111,24 +115,15 @@ public class MemberController {
             member.setPassword("*****");
             return ResponseEntity.status(HttpStatus.OK).body(member);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
 
-
-    @GetMapping("/members/{id}")
-    public ResponseEntity<Member> getMember(@PathVariable @Min(1) Integer id) {
-        Member member = memberService.getMember(id);
-
-        if (member != null) {
-            member.setPassword("*****");
-            return ResponseEntity.status(HttpStatus.OK).body(member);
-        } else {
-            log.error("member null");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+    @DeleteMapping("/members/{id}")
+    public ResponseEntity<?> deleteMember(@PathVariable @Min(1) Integer id) {
+        memberService.delete(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-
 
     public boolean checkMemberParam(MemberRequest memberRequest) {
         boolean isCurrent = true;
