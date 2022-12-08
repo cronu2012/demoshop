@@ -14,9 +14,9 @@ public interface MemberService {
 
     Member isMember(String email, String password);
 
-    Integer register(MemberRequest memberRequest);
+    Integer register(Member member);
 
-    Integer modifyData(MemberRequest memberRequest);
+    Integer modifyMember(Member member);
 
     void delete(Integer id);
 }

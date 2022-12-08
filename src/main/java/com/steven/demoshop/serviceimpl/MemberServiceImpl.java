@@ -4,6 +4,7 @@ import com.steven.demoshop.constant.Gender;
 import com.steven.demoshop.dao.MemberDao;
 import com.steven.demoshop.dto.MemberRequest;
 import com.steven.demoshop.model.Member;
+import com.steven.demoshop.model.Store;
 import com.steven.demoshop.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,25 +24,17 @@ public class MemberServiceImpl implements MemberService {
     private MemberDao memberDao;
 
     @Override
-    public Integer register(MemberRequest memberRequest) {
-        String email = memberRequest.getMemberEmail();
-        String password = memberRequest.getPassword();
-        String name = memberRequest.getMemberName();
-        Gender gender = memberRequest.getGender();
-        LocalDate birthday = memberRequest.getBirthday();
-        String address = memberRequest.getAddress();
-        String phone = memberRequest.getPhone();
-        Member member = Member.builder()
-                .memberEmail(email)
-                .password(password)
-                .memberName(name)
-                .birthday(birthday)
-                .gender(gender)
-                .address(address)
-                .phone(phone)
-                .build();
+    public Integer register(Member member) {
         Member test = memberDao.selectOne(member.getMemberEmail());
+        String phone = member.getPhone();
         if (test == null) {
+            List<Member> members = memberDao.selectAll();
+            for (Member m : members) {
+                if (phone.equals(m.getPhone())) {
+                    log.error("Phone: {} already used",phone);
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+                }
+            }
             return memberDao.insertOrUpdate(member);
         } else {
             log.error("Email: {} already used", member.getMemberEmail());
@@ -50,38 +43,26 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Integer modifyData(MemberRequest memberRequest) {
-        Integer id = memberRequest.getMemberId();
-        String email = memberRequest.getMemberEmail();
-        String password = memberRequest.getPassword();
-        String name = memberRequest.getMemberName();
-        Gender gender = memberRequest.getGender();
-        LocalDate birthday = memberRequest.getBirthday();
-        String address = memberRequest.getAddress();
-        String phone = memberRequest.getPhone();
-
+    public Integer modifyMember(Member member) {
+        Integer id = member.getMemberId();
+        String email = member.getMemberEmail();
+        String phone = member.getPhone();
         List<Member> members = memberDao.selectAll();
         for (Member m : members) {
-            if(m.getMemberId()==id) continue;
-            if(m.getMemberEmail().equals(email)){
-                log.warn("Email: {} already used",email);
-                log.warn("Member: {}" ,m);
+            if (m.getMemberId() == id) continue;
+            if (m.getMemberEmail().equals(email)) {
+                log.warn("Email: {} already used", email);
+                log.warn("Member: {}", m);
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            }
+            if (phone.equals(m.getPhone())) {
+                log.warn("Phone: {} already used",phone);
+                log.warn("Member: {}", m);
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
             }
         }
-        Member member = Member.builder()
-                .memberId(id)
-                .memberEmail(email)
-                .password(password)
-                .memberName(name)
-                .birthday(birthday)
-                .gender(gender)
-                .address(address)
-                .phone(phone)
-                .build();
         return memberDao.insertOrUpdate(member);
     }
-
 
 
     @Override
@@ -107,7 +88,6 @@ public class MemberServiceImpl implements MemberService {
             return null;
         } else {
             if (member.getPassword().equals(password)) {
-                member.setPassword("*****");
                 return member;
             } else {
                 return null;

@@ -1,6 +1,7 @@
 package com.steven.demoshop.serviceimpl;
 
 import com.steven.demoshop.dao.StoreDao;
+import com.steven.demoshop.dto.StoreRequest;
 import com.steven.demoshop.model.Store;
 import com.steven.demoshop.service.StoreService;
 import lombok.extern.slf4j.Slf4j;
@@ -19,8 +20,9 @@ public class StoreServiceImpl implements StoreService {
     @Autowired
     private StoreDao storeDao;
 
+
     @Override
-    public Integer insertOrUpdate(Store store) {
+    public Integer createStore(Store store) {
         List<Store> stores = storeDao.selectAll();
         for (Store s : stores) {
             if (store.getStorePhone().equals(s.getStorePhone())) {
@@ -28,6 +30,11 @@ public class StoreServiceImpl implements StoreService {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
             }
         }
+        return storeDao.insertOrUpdate(store);
+    }
+
+    @Override
+    public Integer modifyStore(Store store) {
         return storeDao.insertOrUpdate(store);
     }
 

@@ -2,7 +2,8 @@ package com.steven.demoshop.constant;
 
 public enum Regex {
 
-    PASSWORD("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,12}$"),
+    PASSWORD("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$"),
+
     EMAIL("^\\w{1,63}@[a-zA-Z\\d]{2,63}\\.[a-zA-Z]{2,63}(\\.[a-zA-Z]{2,63})?$"),
     NAME ("[\\u4e00-\\u9fa5_a-zA-Z\\d]{3,20}"),
     PHONE ("09\\d{2}-?\\d{3}-?\\d{3}"),

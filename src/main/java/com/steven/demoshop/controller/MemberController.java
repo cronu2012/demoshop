@@ -30,54 +30,59 @@ public class MemberController {
 
     @PostMapping("/members")
     public ResponseEntity<Member> register(@RequestBody @Valid MemberRequest memberRequest) {
-        if (!checkMemberParam(memberRequest)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        } else {
-            Integer id = memberService.register(memberRequest);
-
-            if (id == null) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-            }
-
-            Member result = memberService.getMember(id);
-
-            if (result == null) {
-                log.error("creation failed");
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-            } else {
-                result.setPassword("*****");
-                log.info("creation success");
-                return ResponseEntity.status(HttpStatus.CREATED).body(result);
-            }
+        Member member = Member.builder()
+                .memberEmail(memberRequest.getMemberEmail())
+                .password(memberRequest.getPassword())
+                .memberName(memberRequest.getMemberName())
+                .birthday(memberRequest.getBirthday())
+                .gender(memberRequest.getGender())
+                .address(memberRequest.getAddress())
+                .phone(memberRequest.getPhone())
+                .build();
+        Integer id = memberService.register(member);
+        if (id == null) {
+            log.error("creation failed");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-
+        Member result = memberService.getMember(id);
+        if (result == null) {
+            log.error("creation failed");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        } else {
+            log.info("creation success");
+            return ResponseEntity.status(HttpStatus.CREATED).body(result);
+        }
     }
 
     @PutMapping("/members/{id}")
-    public ResponseEntity<Member> modifyData(
+    public ResponseEntity<Member> modifyMember(
             @PathVariable @Min(1) Integer id,
             @RequestBody @Valid MemberRequest memberRequest
     ) {
+        Member member = Member.builder()
+                .memberEmail(memberRequest.getMemberEmail())
+                .password(memberRequest.getPassword())
+                .memberName(memberRequest.getMemberName())
+                .birthday(memberRequest.getBirthday())
+                .gender(memberRequest.getGender())
+                .address(memberRequest.getAddress())
+                .phone(memberRequest.getPhone())
+                .build();
+
         Member oldMember = memberService.getMember(id);
         if (oldMember == null) {
             log.error("member not found");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         } else {
-            if (!checkMemberParam(memberRequest)) {
-                log.error("parameter error");
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            memberRequest.setMemberId(id);
+            Integer memberId = memberService.modifyMember(member);
+            Member result = memberService.getMember(memberId);
+            if (result == null) {
+                log.error("update failed");
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
             } else {
-                memberRequest.setMemberId(id);
-                Integer memberId = memberService.modifyData(memberRequest);
-                Member result = memberService.getMember(memberId);
-                if (result == null) {
-                    log.error("update failed");
-                    throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-                } else {
-                    result.setPassword("*****");
-                    log.info("update success");
-                    return ResponseEntity.status(HttpStatus.OK).body(result);
-                }
+                log.info("update success");
+                return ResponseEntity.status(HttpStatus.OK).body(result);
             }
         }
     }
@@ -86,7 +91,6 @@ public class MemberController {
     public ResponseEntity<Member> getMember(@PathVariable @Min(1) Integer id) {
         Member member = memberService.getMember(id);
         if (member != null) {
-            member.setPassword("*****");
             return ResponseEntity.status(HttpStatus.OK).body(member);
         } else {
             log.error("member null");
@@ -98,11 +102,6 @@ public class MemberController {
     public ResponseEntity<?> getMembers(@RequestParam(required = false) String email) {
         if (email == null) {
             List<Member> members = memberService.getAll();
-            if (members.size() != 0) {
-                for (Member m : members) {
-                    m.setPassword("*****");
-                }
-            }
             return ResponseEntity.status(HttpStatus.OK).body(members);
         }
         if (!(email.matches(Regex.EMAIL.getRegexString()))) {
@@ -112,7 +111,6 @@ public class MemberController {
         Member member = memberService.getMember(email);
 
         if (member != null) {
-            member.setPassword("*****");
             return ResponseEntity.status(HttpStatus.OK).body(member);
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -172,6 +170,4 @@ public class MemberController {
         }
         return isCurrent;
     }
-
-
 }

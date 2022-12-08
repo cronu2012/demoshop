@@ -41,12 +41,7 @@ public class StoreController {
     public ResponseEntity<?> getStores(@RequestParam(required = false) String name) {
         if (name == null) {
             List<Store> stores = storeService.getStores();
-            if (stores.size() == 0) {
-                log.error("No stores");
-                throw new ResponseStatusException(HttpStatus.NO_CONTENT);
-            } else {
-                return ResponseEntity.status(HttpStatus.OK).body(stores);
-            }
+            return ResponseEntity.status(HttpStatus.OK).body(stores);
         }
         Store store = storeService.getStore(name);
         if (store == null) {
@@ -58,59 +53,50 @@ public class StoreController {
     }
 
     @PostMapping("/stores")
-    public ResponseEntity<?> insert(@RequestBody @Valid StoreRequest storeReq) {
-        if (!checkRequestParam(storeReq)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    public ResponseEntity<?> createStore(@RequestBody @Valid StoreRequest storeReq) {
+        Store store = Store.builder()
+                .storeName(storeReq.getStoreName())
+                .storePhone(storeReq.getStorePhone())
+                .intro(storeReq.getIntro())
+                .build();
+        Integer id = storeService.createStore(store);
+        Store result = storeService.getStore(id);
+        if (result == null) {
+            log.error("create failed");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         } else {
-            Store store = Store.builder()
-                    .storeName(storeReq.getStoreName())
-                    .storePhone(storeReq.getStorePhone())
-                    .intro(storeReq.getIntro())
-                    .build();
-            Integer id = storeService.insertOrUpdate(store);
-            Store result = storeService.getStore(id);
-            if (result == null) {
-                log.error("create failed");
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-            } else {
-                log.info(result.toString());
-                log.info("create success");
-                return ResponseEntity.status(HttpStatus.CREATED).body(result);
-            }
+            log.info(result.toString());
+            log.info("create success");
+            return ResponseEntity.status(HttpStatus.CREATED).body(result);
         }
+
     }
 
     @PutMapping("/stores/{id}")
-    public ResponseEntity<?> update(
+    public ResponseEntity<?> modifyStore(
             @PathVariable @Min(1) Integer id,
             @RequestBody @Valid StoreRequest storeReq
     ) {
-        if (!checkRequestParam(storeReq)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        Store store = Store.builder()
+                .storeId(id)
+                .storeName(storeReq.getStoreName())
+                .storePhone(storeReq.getStorePhone())
+                .intro(storeReq.getIntro())
+                .build();
+        Integer storeId = storeService.modifyStore(store);
+        Store result = storeService.getStore(storeId);
+        if (result == null) {
+            log.error("update failed");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         } else {
-            Store store = Store.builder()
-                    .storeId(id)
-                    .storeName(storeReq.getStoreName())
-                    .storePhone(storeReq.getStorePhone())
-                    .intro(storeReq.getIntro())
-                    .build();
-            Integer storeId = storeService.insertOrUpdate(store);
-            Store result = storeService.getStore(storeId);
-            if (result == null) {
-                log.error("update failed");
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-            } else {
-                log.info(result.toString());
-                log.info("update success");
-                return ResponseEntity.status(HttpStatus.OK).body(result);
-            }
-
+            log.info(result.toString());
+            log.info("update success");
+            return ResponseEntity.status(HttpStatus.OK).body(result);
         }
-
     }
 
     @DeleteMapping("/stores/{id}")
-    public ResponseEntity<?> deleteMember(@PathVariable @Min(1) Integer id) {
+    public ResponseEntity<?> deleteStore(@PathVariable @Min(1) Integer id) {
         storeService.delete(id);
         Store store = storeService.getStore(id);
         if (store == null) {
@@ -118,7 +104,7 @@ public class StoreController {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } else {
             log.error("delete failed");
-            return ResponseEntity.status(HttpStatus.OK).body(store);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(store);
         }
     }
 
