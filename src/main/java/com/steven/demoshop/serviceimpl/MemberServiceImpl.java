@@ -1,19 +1,15 @@
 package com.steven.demoshop.serviceimpl;
 
-import com.steven.demoshop.constant.Gender;
 import com.steven.demoshop.dao.MemberDao;
-import com.steven.demoshop.dto.MemberRequest;
 import com.steven.demoshop.model.Member;
-import com.steven.demoshop.model.Store;
 import com.steven.demoshop.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Component
@@ -35,6 +31,9 @@ public class MemberServiceImpl implements MemberService {
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
                 }
             }
+            //使用MD5生成密碼的雜湊值
+            String hashedPassword = DigestUtils.md5DigestAsHex(member.getPassword().getBytes());
+            member.setPassword(hashedPassword);
             return memberDao.insertOrUpdate(member);
         } else {
             log.error("Email: {} already used", member.getMemberEmail());
@@ -61,7 +60,31 @@ public class MemberServiceImpl implements MemberService {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
             }
         }
+        //使用MD5生成密碼的雜湊值
+        String hashedPassword = DigestUtils.md5DigestAsHex(member.getPassword().getBytes());
+        member.setPassword(hashedPassword);
         return memberDao.insertOrUpdate(member);
+    }
+
+    @Override
+    public Member login(String email, String password) {
+        Member member = memberDao.selectOne(email);
+        if (member == null) {
+            log.error("Can not find email {} ", email);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        } else {
+            //使用MD5生成密碼的雜湊值
+            String hashedPassword = DigestUtils.md5DigestAsHex(password.getBytes());
+            log.info(hashedPassword);
+            log.info(member.getPassword());
+            if (member.getPassword().equals(hashedPassword)) {
+                log.info("Member {} login successful", email);
+                return member;
+            } else {
+                log.error("Password is wrong", password);
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            }
+        }
     }
 
 
@@ -81,22 +104,6 @@ public class MemberServiceImpl implements MemberService {
     }
 
     //if no one match,return null
-    @Override
-    public Member login(String email, String password) {
-        Member member = memberDao.selectOne(email);
-        if (member == null) {
-            log.error("Can not find email {} ", email);
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        } else {
-            if (member.getPassword().equals(password)) {
-                log.info("Member {} login successful", email);
-                return member;
-            } else {
-                log.error("Password is wrong", password);
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-            }
-        }
-    }
 
 
     @Override

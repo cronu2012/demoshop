@@ -1,6 +1,5 @@
 package com.steven.demoshop.service;
 
-import com.steven.demoshop.dto.MemberRequest;
 import com.steven.demoshop.model.Member;
 
 import java.util.List;

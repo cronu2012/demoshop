@@ -2,8 +2,9 @@ package com.steven.demoshop.controller;
 
 import com.steven.demoshop.constant.Gender;
 import com.steven.demoshop.constant.Regex;
-import com.steven.demoshop.dto.LoginRequest;
-import com.steven.demoshop.dto.MemberRequest;
+import com.steven.demoshop.dto.member.MemberLogin;
+import com.steven.demoshop.dto.member.MemberModify;
+import com.steven.demoshop.dto.member.MemberRegister;
 import com.steven.demoshop.model.Member;
 import com.steven.demoshop.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +18,6 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -30,15 +30,15 @@ public class MemberController {
     private MemberService memberService;
 
     @PostMapping("/members/register")
-    public ResponseEntity<Member> register(@RequestBody @Valid MemberRequest memberRequest) {
+    public ResponseEntity<Member> register(@RequestBody @Valid MemberRegister memberRegister) {
         Member member = Member.builder()
-                .memberEmail(memberRequest.getMemberEmail())
-                .password(memberRequest.getPassword())
-                .memberName(memberRequest.getMemberName())
-                .birthday(memberRequest.getBirthday())
-                .gender(memberRequest.getGender())
-                .address(memberRequest.getAddress())
-                .phone(memberRequest.getPhone())
+                .memberEmail(memberRegister.getMemberEmail())
+                .password(memberRegister.getPassword())
+                .memberName(memberRegister.getMemberName())
+                .birthday(memberRegister.getBirthday())
+                .gender(memberRegister.getGender())
+                .address(memberRegister.getAddress())
+                .phone(memberRegister.getPhone())
                 .build();
         Integer id = memberService.register(member);
         if (id == null) {
@@ -58,24 +58,31 @@ public class MemberController {
     @PutMapping("/members/{id}")
     public ResponseEntity<Member> modifyMember(
             @PathVariable @Min(1) Integer id,
-            @RequestBody @Valid MemberRequest memberRequest
+            @RequestBody @Valid MemberModify memberModify
     ) {
-        Member member = Member.builder()
-                .memberEmail(memberRequest.getMemberEmail())
-                .password(memberRequest.getPassword())
-                .memberName(memberRequest.getMemberName())
-                .birthday(memberRequest.getBirthday())
-                .gender(memberRequest.getGender())
-                .address(memberRequest.getAddress())
-                .phone(memberRequest.getPhone())
-                .build();
-
         Member oldMember = memberService.getMember(id);
         if (oldMember == null) {
             log.error("member not found");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         } else {
-            memberRequest.setMemberId(id);
+
+            Member member = Member.builder()
+                    .memberEmail(memberModify.getMemberEmail())
+                    .password(memberModify.getPassword())
+                    .memberName(memberModify.getMemberName())
+                    .birthday(memberModify.getBirthday())
+                    .gender(memberModify.getGender())
+                    .address(memberModify.getAddress())
+                    .phone(memberModify.getPhone())
+                    .build();
+            if (member.getMemberEmail() == null) member.setMemberEmail(oldMember.getMemberEmail());
+            if (member.getPassword() == null) member.setPassword(oldMember.getPassword());
+            if (member.getMemberName() == null) member.setMemberName(oldMember.getMemberName());
+            if (member.getBirthday() == null) member.setBirthday(oldMember.getBirthday());
+            if (member.getGender() == null) member.setGender(oldMember.getGender());
+            if (member.getAddress() == null) member.setAddress(oldMember.getAddress());
+            if (member.getPhone() == null) member.setPhone(oldMember.getPhone());
+            member.setMemberId(id);
             Integer memberId = memberService.modifyMember(member);
             Member result = memberService.getMember(memberId);
             if (result == null) {
@@ -89,9 +96,9 @@ public class MemberController {
     }
 
     @PostMapping("/members/login")
-    public ResponseEntity<Member> login(@RequestBody @Valid LoginRequest loginRequest) {
-        String email = loginRequest.getEmail();
-        String password = loginRequest.getPassword();
+    public ResponseEntity<Member> login(@RequestBody @Valid MemberLogin memberLogin) {
+        String email = memberLogin.getMemberEmail();
+        String password = memberLogin.getPassword();
         Member member = memberService.login(email, password);
         return ResponseEntity.status(HttpStatus.OK).body(member);
     }
@@ -132,15 +139,15 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    public boolean checkMemberParam(MemberRequest memberRequest) {
+    public boolean checkMemberParam(MemberRegister memberRegister) {
         boolean isCurrent = true;
-        String email = memberRequest.getMemberEmail();
-        String password = memberRequest.getPassword();
-        String name = memberRequest.getMemberName();
-        Gender gender = memberRequest.getGender();
-        LocalDate birthday = memberRequest.getBirthday();
-        String address = memberRequest.getAddress();
-        String phone = memberRequest.getPhone();
+        String email = memberRegister.getMemberEmail();
+        String password = memberRegister.getPassword();
+        String name = memberRegister.getMemberName();
+        Gender gender = memberRegister.getGender();
+        LocalDate birthday = memberRegister.getBirthday();
+        String address = memberRegister.getAddress();
+        String phone = memberRegister.getPhone();
 
         if (!email.matches(Regex.EMAIL.getRegexString())) {
             isCurrent = false;
@@ -173,7 +180,7 @@ public class MemberController {
             if (!(birthday.toString().matches(Regex.BIRTHDAY.getRegexString()))) {
                 isCurrent = false;
                 log.error("birthday error");
-                log.error(memberRequest.getBirthday().toString());
+                log.error(memberRegister.getBirthday().toString());
                 log.error(birthday.toString());
             }
         }

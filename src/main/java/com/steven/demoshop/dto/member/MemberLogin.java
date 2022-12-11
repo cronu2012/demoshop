@@ -1,16 +1,15 @@
-package com.steven.demoshop.dto;
+package com.steven.demoshop.dto.member;
 
 import lombok.Data;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
 
 @Data
-public class LoginRequest {
+public class MemberLogin {
     @NotBlank
     @Email
-    private String email;
+    private String memberEmail;
     @NotBlank
     private String password;
 }
