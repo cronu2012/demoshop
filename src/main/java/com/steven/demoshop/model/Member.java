@@ -1,5 +1,6 @@
 package com.steven.demoshop.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.steven.demoshop.constant.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,6 +18,7 @@ import java.util.Date;
 public class Member {
     private Integer memberId;
     private String memberEmail;
+    @JsonIgnore
     private String password;
     private String memberName;
     private Gender gender;
