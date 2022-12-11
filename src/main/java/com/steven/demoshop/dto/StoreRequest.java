@@ -15,5 +15,6 @@ public class StoreRequest {
     @NotBlank
     @Pattern(regexp = "09\\d{2}-\\d{3}-\\d{3}")
     private String storePhone;
+    @NotNull
     private String intro;
 }

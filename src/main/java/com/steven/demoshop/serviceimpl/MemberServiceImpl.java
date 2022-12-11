@@ -31,7 +31,7 @@ public class MemberServiceImpl implements MemberService {
             List<Member> members = memberDao.selectAll();
             for (Member m : members) {
                 if (phone.equals(m.getPhone())) {
-                    log.error("Phone: {} already used",phone);
+                    log.error("Phone: {} already used", phone);
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
                 }
             }
@@ -56,7 +56,7 @@ public class MemberServiceImpl implements MemberService {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
             }
             if (phone.equals(m.getPhone())) {
-                log.warn("Phone: {} already used",phone);
+                log.warn("Phone: {} already used", phone);
                 log.warn("Member: {}", m);
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
             }
@@ -82,15 +82,18 @@ public class MemberServiceImpl implements MemberService {
 
     //if no one match,return null
     @Override
-    public Member isMember(String email, String password) {
+    public Member login(String email, String password) {
         Member member = memberDao.selectOne(email);
         if (member == null) {
-            return null;
+            log.error("Can not find email {} ", email);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         } else {
             if (member.getPassword().equals(password)) {
+                log.info("Member {} login successful", email);
                 return member;
             } else {
-                return null;
+                log.error("Password is wrong", password);
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
             }
         }
     }

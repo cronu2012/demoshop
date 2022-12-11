@@ -6,10 +6,7 @@ import lombok.Data;
 import lombok.Value;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 
 import java.time.LocalDate;
 
@@ -31,6 +28,7 @@ public class MemberRequest {
     @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     LocalDate birthday;
+    @NotNull
     String address;
     @NotBlank
     @Pattern(regexp = "09\\d{2}-\\d{3}-\\d{3}")

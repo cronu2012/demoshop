@@ -2,6 +2,7 @@ package com.steven.demoshop.controller;
 
 import com.steven.demoshop.constant.Gender;
 import com.steven.demoshop.constant.Regex;
+import com.steven.demoshop.dto.LoginRequest;
 import com.steven.demoshop.dto.MemberRequest;
 import com.steven.demoshop.model.Member;
 import com.steven.demoshop.service.MemberService;
@@ -28,7 +29,7 @@ public class MemberController {
     @Autowired
     private MemberService memberService;
 
-    @PostMapping("/members")
+    @PostMapping("/members/register")
     public ResponseEntity<Member> register(@RequestBody @Valid MemberRequest memberRequest) {
         Member member = Member.builder()
                 .memberEmail(memberRequest.getMemberEmail())
@@ -85,6 +86,14 @@ public class MemberController {
                 return ResponseEntity.status(HttpStatus.OK).body(result);
             }
         }
+    }
+
+    @PostMapping("/members/login")
+    public ResponseEntity<Member> login(@RequestBody @Valid LoginRequest loginRequest) {
+        String email = loginRequest.getEmail();
+        String password = loginRequest.getPassword();
+        Member member = memberService.login(email, password);
+        return ResponseEntity.status(HttpStatus.OK).body(member);
     }
 
     @GetMapping("/members/{id}")

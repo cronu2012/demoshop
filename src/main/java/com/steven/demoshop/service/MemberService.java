@@ -12,7 +12,7 @@ public interface MemberService {
 
     Member getMember(String email);
 
-    Member isMember(String email, String password);
+    Member login(String email, String password);
 
     Integer register(Member member);
 
