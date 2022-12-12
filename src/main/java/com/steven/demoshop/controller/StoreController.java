@@ -2,7 +2,10 @@ package com.steven.demoshop.controller;
 
 import com.steven.demoshop.constant.Regex;
 import com.steven.demoshop.dto.StoreRequest;
+import com.steven.demoshop.dto.product.ProductAdd;
+import com.steven.demoshop.model.Product;
 import com.steven.demoshop.model.Store;
+import com.steven.demoshop.service.ProductService;
 import com.steven.demoshop.service.StoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -25,6 +29,8 @@ public class StoreController {
     @Autowired
     private StoreService storeService;
 
+    @Autowired
+    private ProductService productService;
 
     @GetMapping("/stores/{id}")
     public ResponseEntity<?> getStore(@PathVariable @Min(1) Integer id) {
@@ -106,6 +112,24 @@ public class StoreController {
             log.error("delete failed");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(store);
         }
+    }
+
+    @PostMapping("/products")
+    public ResponseEntity<String> addProducts(@RequestBody @Valid List<ProductAdd> productAdds) {
+        List<Product> list = new ArrayList<>();
+        for (ProductAdd add : productAdds) {
+            Product item = Product.builder()
+                    .storeId(add.getStoreId())
+                    .productName(add.getProductName())
+                    .price(add.getPrice())
+                    .info(add.getInfo())
+                    .stock(add.getStock())
+                    .status(add.getStatus())
+                    .build();
+            list.add(item);
+        }
+        Integer result = productService.addProduct(list);
+        return ResponseEntity.status(HttpStatus.CREATED).body("已成功新增"+result+"筆商品");
     }
 
 
