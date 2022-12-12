@@ -80,14 +80,14 @@ public class AdminDaoImpl implements AdminDao {
         Map<String, Object> map = new HashMap<>();
         map.put("mid", admin.getMemberId());
         map.put("sid", admin.getStoreId());
-        map.put("per", admin.getPermission());
+        map.put("per", admin.getPermission().name());
         return jdbcTemplate.update(INSERT, map);
     }
 
     @Override
     public Integer update(Administrator admin) {
         Map<String, Object> map = new HashMap<>();
-        map.put("per", admin.getPermission());
+        map.put("per", admin.getPermission().name());
         map.put("mid", admin.getMemberId());
         map.put("sid", admin.getStoreId());
         return jdbcTemplate.update(UPDATE, map);
