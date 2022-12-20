@@ -1,5 +1,6 @@
 package com.steven.demoshop.rowmapper;
 
+import com.steven.demoshop.constant.ProductCategory;
 import com.steven.demoshop.constant.ProductStatus;
 import com.steven.demoshop.model.Product;
 import org.springframework.jdbc.core.RowMapper;
@@ -13,6 +14,7 @@ public class ProductMapper implements RowMapper<Product> {
         Product product = Product.builder()
                 .productId(rs.getInt("product_id"))
                 .storeId(rs.getInt("store_id"))
+                .category(ProductCategory.valueOf(rs.getString("category")))
                 .productName(rs.getString("product_name"))
                 .price(rs.getInt("product_price"))
                 .info(rs.getString("info"))

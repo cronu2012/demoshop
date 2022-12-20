@@ -9,20 +9,13 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 @Data
-public class ProductAdd {
-    @NotNull
+public class ProductModify {
     private Integer storeId;
-    @NotNull
     private ProductCategory category;
-    @NotBlank
     @Pattern(regexp = "[\\u4e00-\\u9fa5_a-zA-Z\\d]{3,20}")
     private String productName;
-    @NotNull
     private Integer price;
-    @NotNull
     private String info;
-    @NotNull
     private Integer stock;
-    @NotNull
     private ProductStatus status;
 }
