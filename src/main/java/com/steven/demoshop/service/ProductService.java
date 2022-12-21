@@ -1,5 +1,6 @@
 package com.steven.demoshop.service;
 
+import com.steven.demoshop.dto.product.ProductQueryParam;
 import com.steven.demoshop.model.Product;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public interface ProductService {
 
     Product getProduct(Integer productId);
 
-    List<Product> getStoreProduct(Integer storeId);
+    List<Product> getProducts(ProductQueryParam queryParam);
 
     void delete(Integer productId);
 

@@ -1,9 +1,11 @@
 package com.steven.demoshop.controller;
 
+import com.steven.demoshop.constant.ProductCategory;
 import com.steven.demoshop.constant.Regex;
 import com.steven.demoshop.dto.StoreRequest;
 import com.steven.demoshop.dto.product.ProductAdd;
 import com.steven.demoshop.dto.product.ProductModify;
+import com.steven.demoshop.dto.product.ProductQueryParam;
 import com.steven.demoshop.model.Product;
 import com.steven.demoshop.model.Store;
 import com.steven.demoshop.service.ProductService;
@@ -184,15 +186,21 @@ public class StoreController {
 
     @GetMapping("/products")
     public ResponseEntity<List<Product>> getProducts(
-            @RequestParam(required = false) @Min(1) Integer storeId
+            @RequestParam(required = false) @Min(1) Integer storeId,
+            @RequestParam(required = false) ProductCategory category,
+            @RequestParam(required = false) String productName,
+            @RequestParam(defaultValue = "create_time") String orderBy,
+            @RequestParam(defaultValue = "desc") String sort
     ) {
-        if (storeId == null) {
-            List<Product> products = productService.getAll();
-            return ResponseEntity.status(HttpStatus.OK).body(products);
-        } else {
-            List<Product> product = productService.getStoreProduct(storeId);
-            return ResponseEntity.status(HttpStatus.OK).body(product);
-        }
+        ProductQueryParam queryParam = ProductQueryParam.builder()
+                .storeId(storeId)
+                .category(category)
+                .productName(productName)
+                .orderBy(orderBy)
+                .sort(sort)
+                .build();
+        List<Product> products = productService.getProducts(queryParam);
+        return ResponseEntity.status(HttpStatus.OK).body(products);
     }
 
 

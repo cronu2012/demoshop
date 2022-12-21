@@ -1,6 +1,7 @@
 package com.steven.demoshop.daoimpl;
 
 import com.steven.demoshop.dao.ProductDao;
+import com.steven.demoshop.dto.product.ProductQueryParam;
 import com.steven.demoshop.model.Product;
 import com.steven.demoshop.rowmapper.ProductMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -25,17 +26,10 @@ public class ProductDaoImpl implements ProductDao {
     private static final String UPDATE_STOCK =
             "update product set stock = :stock where product_id = :productId";
 
-    private static final String SELECT_ALL =
+    private static final String SELECT =
             "select product_id,store_id,category,product_name,product_price,info,stock,status,create_time,modify_time " +
-                    "from product";
+                    "from product where 1=1";
 
-    private static final String SELECT_ID =
-            "select product_id,store_id,category,product_name,product_price,info,stock,status,create_time,modify_time " +
-                    "from product where product_id=:productId";
-
-    private static final String SELECT_STORE =
-            "select product_id,store_id,category,product_name,product_price,info,stock,status,create_time,modify_time " +
-                    "from product where store_id=:storeId";
 
     private static final String DELETE =
             "delete from product where product_id=:productId";
@@ -50,7 +44,7 @@ public class ProductDaoImpl implements ProductDao {
         for (Product p : products) {
             parameterSources[i] = new MapSqlParameterSource();
             parameterSources[i].addValue("storeId", p.getStoreId());
-            parameterSources[i].addValue("category", p.getCategory());
+            parameterSources[i].addValue("category", p.getCategory().name());
             parameterSources[i].addValue("productName", p.getProductName());
             parameterSources[i].addValue("productPrice", p.getPrice());
             parameterSources[i].addValue("info", p.getInfo());
@@ -65,7 +59,7 @@ public class ProductDaoImpl implements ProductDao {
     @Override
     public Integer update(Product product) {
         Map<String, Object> map = new HashMap<>();
-        map.put("category", product.getCategory());
+        map.put("category", product.getCategory().name());
         map.put("productName", product.getProductName());
         map.put("price", product.getPrice());
         map.put("info", product.getInfo());
@@ -95,13 +89,15 @@ public class ProductDaoImpl implements ProductDao {
 
     @Override
     public List<Product> selectAll() {
-        List<Product> list = jdbcTemplate.query(SELECT_ALL, new HashMap<>(), new ProductMapper());
+        List<Product> list = jdbcTemplate.query(SELECT, new HashMap<>(), new ProductMapper());
         log.info("所有商品: {}", list);
         return list;
     }
 
     @Override
     public Product selectByID(Integer productId) {
+        String SELECT_ID = SELECT;
+        SELECT_ID += " and product_id = :productId";
         Map<String, Object> map = new HashMap<>();
         map.put("productId", productId);
         List<Product> products = jdbcTemplate.query(SELECT_ID, new MapSqlParameterSource(map), new ProductMapper());
@@ -110,12 +106,30 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
-    public List<Product> selectByStore(Integer storeId) {
+    public List<Product> selectQuery(ProductQueryParam queryParam) {
+        StringBuilder sql = new StringBuilder(SELECT);
         Map<String, Object> map = new HashMap<>();
-        map.put("storeId", storeId);
-        List<Product> products = jdbcTemplate.query(SELECT_STORE, new MapSqlParameterSource(map), new ProductMapper());
-        log.info("商店ID{} 的商品: {}", storeId, products.size() == 0 ? "無此商店ID" : products.get(0));
-        return products.size() == 0 ? null : products;
+
+        if (queryParam.getStoreId() != null) {
+            sql.append(" and store_id = :storeId");
+            map.put("storeId", queryParam.getStoreId());
+        }
+        if (queryParam.getCategory() != null) {
+            sql.append(" and category = :category");
+            map.put("category", queryParam.getCategory().name());
+        }
+        if (queryParam.getProductName() != null) {
+            sql.append(" and product_name like :productName");
+            map.put("productName", "%" + queryParam.getProductName() + "%");
+        }
+
+
+        sql.append(" order by "+queryParam.getOrderBy()+" "+queryParam.getSort());
+
+        String SELECT_QUERY = sql.toString();
+        log.info(SELECT_QUERY);
+        List<Product> products = jdbcTemplate.query(SELECT_QUERY, new MapSqlParameterSource(map), new ProductMapper());
+        return products;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.steven.demoshop.dao;
 
+import com.steven.demoshop.dto.product.ProductQueryParam;
 import com.steven.demoshop.model.Product;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public interface ProductDao {
 
     Product selectByID(Integer productId);//回傳一件商品物件
 
-    List<Product> selectByStore(Integer storeId);//回傳一家商店若干商品物件
+    List<Product> selectQuery(ProductQueryParam queryParam);//回傳一家商店若干商品物件
 
     void delete(Integer productId);//回傳執行幾筆資料
 

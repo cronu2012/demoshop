@@ -1,6 +1,7 @@
 package com.steven.demoshop.serviceimpl;
 
 import com.steven.demoshop.dao.ProductDao;
+import com.steven.demoshop.dto.product.ProductQueryParam;
 import com.steven.demoshop.model.Product;
 import com.steven.demoshop.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
@@ -66,13 +67,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getStoreProduct(Integer storeId) {
-        List<Product> products = productDao.selectByStore(storeId);
-        if (products == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        } else {
-            return products;
-        }
+    public List<Product> getProducts(ProductQueryParam queryParam) {
+        List<Product> products = productDao.selectQuery(queryParam);
+        return products;
     }
 
     @Override
