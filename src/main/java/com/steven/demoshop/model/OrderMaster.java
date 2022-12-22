@@ -21,6 +21,6 @@ public class OrderMaster {
     private Integer storeId;
     private OrderStatus status;
     private Integer totalPrice;
-    private Date orderTime;
+    private Date createTime;
     private Date modifyTime;
 }

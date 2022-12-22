@@ -65,7 +65,7 @@ create table order_master
     store_id    BIGINT unsigned,
     status      VARCHAR(40) not null,
     total_price INT         not null,
-    order_time  timestamp default current_timestamp,
+    create_time  timestamp default current_timestamp,
     modify_time timestamp default current_timestamp on update current_timestamp,
     foreign key (store_id) references store (store_id),
     foreign key (member_id) references member (member_id)
@@ -76,7 +76,7 @@ create table order_detail
     product_id  BIGINT unsigned,
     quantity    INT not null,
     od_price    INT not null,
-    order_time  timestamp default current_timestamp,
+    create_time  timestamp default current_timestamp,
     modify_time timestamp default current_timestamp on update current_timestamp,
     foreign key (order_id) references order_master (order_id),
     foreign key (product_id) references product (product_id)

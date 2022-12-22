@@ -20,6 +20,6 @@ public class OrderDetail {
     private Integer productId;
     private Integer quantity;
     private Integer odPrice;
-    private Date orderTime;
+    private Date createTime;
     private Date modifyTime;
 }
