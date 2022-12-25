@@ -20,5 +20,5 @@ public class OrderAdd {
     @NotNull
     private Integer storeId;
 
-    private List<Map<String,Object>> detail;
+    private List<Map<String,Integer>> detail;
 }

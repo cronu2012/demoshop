@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface OrderDetailService {
-    Map<String,Integer> addOrderDetail(OrderDetail orderDetail);
+    List<Map<String,Integer>> addOrderDetail(List<OrderDetail> orderDetail);
 
     Map<String,Integer> modifyOrderDetail(OrderDetail orderDetail);
 

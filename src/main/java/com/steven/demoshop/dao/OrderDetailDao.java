@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface OrderDetailDao {
-    Map<String,Integer> insert(OrderDetail orderDetail);
+    List<Map<String, Integer>> insert(List<OrderDetail> orderDetails);
 
     Map<String,Integer> update(OrderDetail orderDetail);
 

@@ -12,4 +12,5 @@ public class OrderQueryParam {
     OrderStatus status;
     String orderBy;
     String sort;
+    Integer page;
 }

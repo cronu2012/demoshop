@@ -21,11 +21,8 @@ public class OrderDetailServiceImpl implements OrderDetailService {
     private OrderDetailDao orderDetailDao;
 
     @Override
-    public Map<String, Integer> addOrderDetail(OrderDetail orderDetail) {
-        Map<String, Integer> id = orderDetailDao.insert(orderDetail);
-        if (id == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
+    public List<Map<String, Integer>> addOrderDetail(List<OrderDetail> orderDetails) {
+        List<Map<String, Integer>> id = orderDetailDao.insert(orderDetails);
         return id;
     }
 

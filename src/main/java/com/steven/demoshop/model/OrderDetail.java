@@ -1,6 +1,7 @@
 package com.steven.demoshop.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +17,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderDetail {
+    @JsonIgnore
     private Integer orderId;
     private Integer productId;
     private Integer quantity;

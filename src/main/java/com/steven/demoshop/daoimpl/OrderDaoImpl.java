@@ -68,7 +68,12 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     public OrderMaster selectById(Integer orderId) {
-        List<OrderMaster> orderMasters = jdbcTemplate.query(SELECT, new HashMap<>(), new OrderMasterMapper());
+        String SELECT_ID = SELECT;
+        SELECT_ID += " and order_id = :orderId";
+        Map<String, Object> map = new HashMap<>();
+        map.put("orderId", orderId);
+
+        List<OrderMaster> orderMasters = jdbcTemplate.query(SELECT_ID, map, new OrderMasterMapper());
         return orderMasters.size() != 0 ? orderMasters.get(0) : null;
     }
 
@@ -90,6 +95,10 @@ public class OrderDaoImpl implements OrderDao {
             map.put("status", queryParam.getStatus().name());
         }
         sql.append(" order by " + queryParam.getOrderBy() + " " + queryParam.getSort());
+        sql.append(" limit :limit offset :offset");
+        map.put("limit", 6);
+        map.put("offset", (queryParam.getPage() - 1) * 6);
+
         String QUERY = sql.toString();
 
         return jdbcTemplate.query(QUERY, map, new OrderMasterMapper());
