@@ -123,8 +123,10 @@ public class ProductDaoImpl implements ProductDao {
             map.put("productName", "%" + queryParam.getProductName() + "%");
         }
 
-
-        sql.append(" order by "+queryParam.getOrderBy()+" "+queryParam.getSort());
+        sql.append(" order by " + queryParam.getOrderBy() + " " + queryParam.getSort());
+        sql.append(" limit :limit offset :offset");
+        map.put("limit", 6);
+        map.put("offset", (queryParam.getPage() - 1 )* 6);
 
         String SELECT_QUERY = sql.toString();
         log.info(SELECT_QUERY);

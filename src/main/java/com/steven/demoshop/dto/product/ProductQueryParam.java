@@ -13,6 +13,9 @@ public class ProductQueryParam {
     Integer storeId;
     ProductCategory category;
     String productName;
+    //排序
     String orderBy;
     String sort;
+    //分頁
+    Integer page;
 }

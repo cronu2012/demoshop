@@ -190,7 +190,8 @@ public class StoreController {
             @RequestParam(required = false) ProductCategory category,
             @RequestParam(required = false) String productName,
             @RequestParam(defaultValue = "create_time") String orderBy,
-            @RequestParam(defaultValue = "desc") String sort
+            @RequestParam(defaultValue = "desc") String sort,
+            @RequestParam(defaultValue = "1") Integer page
     ) {
         ProductQueryParam queryParam = ProductQueryParam.builder()
                 .storeId(storeId)
@@ -198,6 +199,7 @@ public class StoreController {
                 .productName(productName)
                 .orderBy(orderBy)
                 .sort(sort)
+                .page(page)
                 .build();
         List<Product> products = productService.getProducts(queryParam);
         return ResponseEntity.status(HttpStatus.OK).body(products);
