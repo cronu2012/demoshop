@@ -2,8 +2,11 @@ package com.steven.demoshop.serviceimpl;
 
 import com.steven.demoshop.constant.OrderStatus;
 import com.steven.demoshop.dao.OrderDao;
-import com.steven.demoshop.dto.order.OrderAdd;
+import com.steven.demoshop.dto.order.CreateOrderRequest;
+import com.steven.demoshop.dto.order.OrderDetailParam;
+import com.steven.demoshop.dto.order.OrderDetailQueryParam;
 import com.steven.demoshop.dto.order.OrderQueryParam;
+import com.steven.demoshop.model.OrderDetail;
 import com.steven.demoshop.model.OrderMaster;
 import com.steven.demoshop.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
@@ -23,21 +26,8 @@ public class OrderServiceImpl implements OrderService {
     private OrderDao orderDao;
 
     @Override
-    public Integer createOrder(OrderAdd orderAdd) {
-        List<Map<String, Integer>> mapList = orderAdd.getDetail();
-        int totalPrice = 0;
-        for (Map<String, Integer> m : mapList) {
-            totalPrice += m.get("price");
-        }
-
-        OrderMaster orderMaster = OrderMaster.builder()
-                .memberId(orderAdd.getMemberId())
-                .storeId(orderAdd.getStoreId())
-                .status(OrderStatus.CREATED)
-                .totalPrice(totalPrice)
-                .build();
-
-        Integer id = orderDao.insert(orderMaster);
+    public Integer createOrder(OrderMaster orderMaster) {
+        Integer id = orderDao.insertOrder(orderMaster);
         if (id == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
@@ -45,30 +35,33 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Integer modifyOrder(OrderMaster orderMaster) {
-        Integer id = orderDao.update(orderMaster);
-        if (id == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+    public OrderMaster getOrder(Integer orderId) {
+        OrderMaster orderMaster = orderDao.selectOrderById(orderId);
+        if (orderMaster == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        return id;
+        return orderMaster;
     }
-
     @Override
     public List<OrderMaster> getOrderList(OrderQueryParam queryParam) {
         return orderDao.selectOrders(queryParam);
     }
 
     @Override
-    public OrderMaster getOrder(Integer orderId) {
-        OrderMaster orderMaster = orderDao.selectById(orderId);
-        if (orderMaster == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    public Integer modifyOrder(OrderMaster orderMaster) {
+        Integer id = orderDao.updateOrder(orderMaster);
+        if (id == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        return orderMaster;
+        return id;
     }
+
+
 
     @Override
     public void delete(Integer orderId) {
-        orderDao.delete(orderId);
+        orderDao.deleteOrder(orderId);
     }
+
+
 }

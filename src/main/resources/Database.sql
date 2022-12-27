@@ -13,7 +13,7 @@ commit;
 create table member
 (
     member_id    bigint unsigned primary key AUTO_INCREMENT,
-    member_email VARCHAR(60) not null,
+    member_email VARCHAR(60) not null unique key,
     password     VARCHAR(40) not null,
     member_name  VARCHAR(40) not null,
     gender       VARCHAR(40) not null,
