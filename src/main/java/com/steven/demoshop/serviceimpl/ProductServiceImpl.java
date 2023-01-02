@@ -39,10 +39,17 @@ public class ProductServiceImpl implements ProductService {
             Integer id = (Integer) map.get("productId");
             Integer quantity = (Integer) map.get("quantity");
             Product product = new Product();
-            for(Product p:products){
-                if(p.getProductId()==id) product = p;
+            for (Product p : products) {
+                if (p.getProductId() == id) product = p;
             }
-            Integer newStock = product.getStock() - quantity;
+            Integer newStock;
+            if (product.getStock() >= quantity) {
+                newStock = product.getStock() - quantity;
+            } else {
+                log.error("商品ID:{} 商品名稱:{} 庫存不足", product.getProductId(), product.getProductName());
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            }
+
             Map<String, Integer> mapPara = new HashMap<>();
             mapPara.put("productId", id);
             mapPara.put("stock", newStock);
