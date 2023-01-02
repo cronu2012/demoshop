@@ -90,7 +90,7 @@ public class ProductDaoImpl implements ProductDao {
     @Override
     public List<Product> selectAll() {
         List<Product> list = jdbcTemplate.query(SELECT, new HashMap<>(), new ProductMapper());
-        log.info("所有商品: {}", list);
+//        log.info("所有商品: {}", list);
         return list;
     }
 

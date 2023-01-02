@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +40,7 @@ public class StoreDaoImpl implements StoreDao {
 
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
-
+    @Transactional
     @Override
     public Integer insertOrUpdate(Store store) {
         Map<String, Object> map = new HashMap<>();
