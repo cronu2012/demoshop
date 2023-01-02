@@ -1,5 +1,6 @@
 package com.steven.demoshop.model;
 
+import com.steven.demoshop.constant.ProductCategory;
 import com.steven.demoshop.constant.ProductStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,6 +19,7 @@ import java.util.Date;
 public class Product {
     private Integer productId;
     private Integer storeId;
+    private ProductCategory category;
     private String productName;
     private Integer price;
     private String info;

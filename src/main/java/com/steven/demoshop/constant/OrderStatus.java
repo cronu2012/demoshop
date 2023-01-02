@@ -1,7 +1,7 @@
 package com.steven.demoshop.constant;
 
 public enum OrderStatus {
-    STOCK,
+    CREATED,
     SHIPPING,
     ARRIVAL
 }

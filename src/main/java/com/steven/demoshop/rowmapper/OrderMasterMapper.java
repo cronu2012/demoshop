@@ -16,7 +16,7 @@ public class OrderMasterMapper implements RowMapper<OrderMaster> {
                 .storeId(rs.getInt("store_id"))
                 .status(OrderStatus.valueOf(rs.getString("status")))
                 .totalPrice(rs.getInt("total_price"))
-                .orderTime(rs.getTimestamp("order_time"))
+                .createTime(rs.getTimestamp("create_time"))
                 .modifyTime(rs.getTimestamp("modify_time"))
                 .build();
         return orderMaster;
