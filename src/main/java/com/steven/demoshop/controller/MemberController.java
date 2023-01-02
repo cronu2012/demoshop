@@ -67,21 +67,14 @@ public class MemberController {
         } else {
 
             Member member = Member.builder()
-                    .memberEmail(memberModify.getMemberEmail())
-                    .password(memberModify.getPassword())
-                    .memberName(memberModify.getMemberName())
-                    .birthday(memberModify.getBirthday())
-                    .gender(memberModify.getGender())
-                    .address(memberModify.getAddress())
-                    .phone(memberModify.getPhone())
+                    .memberEmail(memberModify.getMemberEmail() != null ? memberModify.getMemberEmail() : oldMember.getMemberEmail())
+                    .password(memberModify.getPassword() != null ? memberModify.getPassword() : oldMember.getPassword())
+                    .memberName(memberModify.getMemberName() != null ? memberModify.getMemberName() : oldMember.getMemberName())
+                    .birthday(memberModify.getBirthday() != null ? memberModify.getBirthday() : oldMember.getBirthday())
+                    .gender(memberModify.getGender() != null ? memberModify.getGender() : oldMember.getGender())
+                    .address(memberModify.getAddress() != null ? memberModify.getAddress() : oldMember.getAddress())
+                    .phone(memberModify.getPhone() != null ? memberModify.getPhone() : oldMember.getPhone())
                     .build();
-            if (member.getMemberEmail() == null) member.setMemberEmail(oldMember.getMemberEmail());
-            if (member.getPassword() == null) member.setPassword(oldMember.getPassword());
-            if (member.getMemberName() == null) member.setMemberName(oldMember.getMemberName());
-            if (member.getBirthday() == null) member.setBirthday(oldMember.getBirthday());
-            if (member.getGender() == null) member.setGender(oldMember.getGender());
-            if (member.getAddress() == null) member.setAddress(oldMember.getAddress());
-            if (member.getPhone() == null) member.setPhone(oldMember.getPhone());
             member.setMemberId(id);
             Integer memberId = memberService.modifyMember(member);
             Member result = memberService.getMember(memberId);
