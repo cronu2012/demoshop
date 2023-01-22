@@ -42,11 +42,21 @@ public class OrderController {
 
         List<OrderDetail> orderDetails = new ArrayList<>();
         for (OrderDetailParam detail : details) {
-            OrderDetail od = OrderDetail.builder().productId(detail.getProductId()).quantity(detail.getQuantity()).odPrice(detail.getOdPrice()).build();
+            OrderDetail od = OrderDetail.builder()
+                    .productId(detail.getProductId())
+                    .quantity(detail.getQuantity())
+                    .odPrice(detail.getOdPrice())
+                    .build();
             orderDetails.add(od);
         }
 
-        OrderMaster orderMaster = OrderMaster.builder().memberId(memberId).storeId(createOrderRequest.getStoreId()).orderDetails(orderDetails).status(OrderStatus.CREATED).totalPrice(totalPrice).build();
+        OrderMaster orderMaster = OrderMaster.builder()
+                .memberId(memberId)
+                .storeId(createOrderRequest.getStoreId())
+                .orderDetails(orderDetails)
+                .status(OrderStatus.CREATED)
+                .totalPrice(totalPrice)
+                .build();
 
         Integer orderId = orderService.createOrder(orderMaster);
         OrderMaster master = orderService.getOrder(orderId);
